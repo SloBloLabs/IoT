@@ -1,0 +1,2734 @@
+[
+    {
+        "id": "7f238379090da3b0",
+        "type": "tab",
+        "label": "go-eCharger",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "12fbad89a6c2acc9",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Charge Control",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"filter\":\"alw,amp,fsp,frc,car,cbl,pha,ama,nrg,nrg,mca,wh,eto\"}",
+        "payloadType": "json",
+        "x": 380,
+        "y": 240,
+        "wires": [
+            [
+                "abeafa1098dbbe39"
+            ]
+        ]
+    },
+    {
+        "id": "abeafa1098dbbe39",
+        "type": "http request",
+        "z": "7f238379090da3b0",
+        "name": "/api/status",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "query",
+        "url": "http://lemmy2:5080/api/status",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 470,
+        "y": 340,
+        "wires": [
+            [
+                "2116b6e552040ca9",
+                "e8e1c0ab90502d46"
+            ]
+        ]
+    },
+    {
+        "id": "d23b9749877b28ec",
+        "type": "comment",
+        "z": "7f238379090da3b0",
+        "name": "https://github.com/goecharger/go-eCharger-API-v2/blob/main/apikeys-de.md",
+        "info": "",
+        "x": 550,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "aad26db58801ddcc",
+        "type": "link in",
+        "z": "7f238379090da3b0",
+        "name": "Receive Enphase Raw Data",
+        "links": [
+            "3602cfb264d30dd5"
+        ],
+        "x": 365,
+        "y": 2020,
+        "wires": [
+            [
+                "9f382815c8981356",
+                "0b81833e66e39696"
+            ]
+        ]
+    },
+    {
+        "id": "ae8274624b4eaea7",
+        "type": "comment",
+        "z": "7f238379090da3b0",
+        "name": "Enphase Monitor",
+        "info": "",
+        "x": 220,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "6ea6f50351466fb9",
+        "type": "function",
+        "z": "7f238379090da3b0",
+        "d": true,
+        "name": "Parse Enphase Message",
+        "func": "// fetch state from flow context\nlet pvPowerValues = flow.get(\"pvPowerValues\")\nlet consumptionValues = flow.get(\"consumptionValues\")\n\n// fetch values from payload\nconst newPvPowerValue = msg.payload.production[\"ph-a\"].p\n                      + msg.payload.production[\"ph-b\"].p\n                      + msg.payload.production[\"ph-c\"].p;\n\nconst newConsumptionValue = msg.payload[\"total-consumption\"][\"ph-a\"].p\n                          + msg.payload[\"total-consumption\"][\"ph-b\"].p\n                          + msg.payload[\"total-consumption\"][\"ph-c\"].p;\n\n// prepend new value to array\npvPowerValues.unshift(newPvPowerValue)\nconsumptionValues.unshift(newConsumptionValue)\n\n// array housekeepting\nlet maxArraySize = 60 // in s\n\nif (pvPowerValues.length > maxArraySize) {\n    pvPowerValues.pop()\n}\n\nif(consumptionValues.length > maxArraySize) {\n    consumptionValues.pop()\n}\n\n// calculate average values\nconst average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;\n\nmsg.avgPvPower = average(pvPowerValues);\nmsg.avgConsumption = average(consumptionValues);\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Avg PvPower: \" + msg.avgPvPower + \", Avg Consumption: \" + msg.avgConsumption });\n\n// store new values to flow context\nflow.set(\"pvPowerValues\", pvPowerValues)\nflow.set(\"consumptionValues\", consumptionValues)\n\nflow.set(\"avgPvPower\", msg.avgPvPower)\nflow.set(\"avgConsumption\", msg.avgConsumption)\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\n\nflow.set(\"pvPowerValues\", [])\nflow.set(\"consumptionValues\", [])\n\nflow.set(\"avgPvPower\", 0)\nflow.set(\"avgConsumption\", 0)",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 1920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3736352cc1296d90",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Simulate Enphase Message",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{     \"production\": {         \"ph-a\": {             \"p\": -2.774,             \"q\": 131.02,             \"s\": 135.442,             \"v\": 238.637,             \"i\": 0.568,             \"pf\": 0,             \"f\": 50.12         },         \"ph-b\": {             \"p\": -2.808,             \"q\": 143.869,             \"s\": 143.869,             \"v\": 238.869,             \"i\": 0.602,             \"pf\": 0,             \"f\": 50.12         },         \"ph-c\": {             \"p\": -3.827,             \"q\": 146.98,             \"s\": 151.431,             \"v\": 238.228,             \"i\": 0.635,             \"pf\": -0.04,             \"f\": 50.12         }     },     \"net-consumption\": {         \"ph-a\": {             \"p\": 434.726,             \"q\": -130.421,             \"s\": 534,             \"v\": 238.928,             \"i\": 2.236,             \"pf\": 0.82,             \"f\": 50.12         },         \"ph-b\": {             \"p\": 59.933,             \"q\": -161.005,             \"s\": 168.019,             \"v\": 238.86,             \"i\": 0.704,             \"pf\": 0.32,             \"f\": 50.12         },         \"ph-c\": {             \"p\": 24.997,             \"q\": -179.517,             \"s\": 197.466,             \"v\": 238.398,             \"i\": 0.828,             \"pf\": 0.11,             \"f\": 50.12         }     },     \"total-consumption\": {         \"ph-a\": {             \"p\": 431.952,             \"q\": -261.441,             \"s\": 669.504,             \"v\": 238.782,             \"i\": 2.804,             \"pf\": 0.65,             \"f\": 50.12         },         \"ph-b\": {             \"p\": 57.125,             \"q\": -304.874,             \"s\": 311.809,             \"v\": 238.864,             \"i\": 1.305,             \"pf\": 0.18,             \"f\": 50.12         },         \"ph-c\": {             \"p\": 21.17,             \"q\": -326.497,             \"s\": 348.747,             \"v\": 238.313,             \"i\": 1.463,             \"pf\": 0.06,             \"f\": 50.12         }     } }",
+        "payloadType": "json",
+        "x": 260,
+        "y": 1960,
+        "wires": [
+            [
+                "6ea6f50351466fb9",
+                "9f382815c8981356",
+                "0b81833e66e39696"
+            ]
+        ]
+    },
+    {
+        "id": "98c5663fcb64fc88",
+        "type": "function",
+        "z": "7f238379090da3b0",
+        "name": "Control Charger",
+        "func": "// fetch flow state\nlet chargeMode = flow.get(\"chargeMode\"); // off, fast, eco, sun\nlet avgPvPower = flow.get(\"pvPower\");\nlet avgConsumption = flow.get(\"consumption\");\n\nlet minCurrent = msg.payload.minChargingCurrent;\nlet maxCurrent = Math.min(msg.payload.maxChargingCurrent, msg.payload.cableCurrentLimit)\n\nlet curChargingingPower = msg.payload.curChargingingPower;\n\nlet propertyConsumption = avgConsumption - curChargingingPower;\nlet exceedingPvPower = avgPvPower - propertyConsumption;\n\nlet phasesLoading = msg.payload.phasesLoading;\n\nlet commands = {};\nlet targetState = 'undefined';\nlet targetPhases = 0;\nlet targetCurrent = 0;\n\nif(msg.payload.chargingState == 2) { // charging\n    \n    if (exceedingPvPower < 1400) {\n        targetState = 'off';\n        if (msg.payload.forceState != 1) {\n            commands[\"frc\"] = 1;\n        }\n    } else {\n        targetState = 'on';\n        if (msg.payload.forceState == 1) {\n            commands[\"frc\"] = 2;\n        }\n        // phase switch with hysteriesis\n        if (exceedingPvPower > 4700) {\n            targetPhases = 3;\n            if (msg.payload.phasesEnabled == 1) {\n                msg.phaseSwitch = 3;\n                phasesLoading = 3;\n                commands[\"psm\"] = 2;\n            }\n        } else if (exceedingPvPower < 4100) {\n            targetPhases = 1;\n            if (msg.payload.phasesEnabled == 3) {\n                msg.phaseSwitch = 1;\n                phasesLoading = 1;\n                commands[\"psm\"] = 1;\n            }\n        }\n\n        targetCurrent = Math.floor(exceedingPvPower / phasesLoading / 230);\n\n        //node.log(targetCurrent);\n        //node.log(msg.payload.curAmpsSet);\n        //node.log(minCurrent);\n        //node.log(maxCurrent);\n        if (targetCurrent != msg.payload.curAmpsSet && targetCurrent >= minCurrent && targetCurrent <= maxCurrent) {\n            commands[\"amp\"] = targetCurrent;\n        }\n    }\n}\n\nmsg.status = {\n    \"chargeMode\": chargeMode,\n    \"avgPvPower\": avgPvPower,\n    \"avgConsumption\": avgConsumption,\n    \"propertyConsumption\": propertyConsumption,\n    \"exceedingPvPower\": exceedingPvPower,\n    \"minCurrent\": minCurrent,\n    \"maxCurrent\": maxCurrent,\n    \"curChargingingPower\": curChargingingPower,\n    \"phasesLoading\": phasesLoading,\n    \"targetState\": targetState,\n    \"targetPhases\": targetPhases,\n    \"targetCurrent\": targetCurrent\n};\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Status=\" + targetState + \", Phases=\" + targetPhases + \", Current=\" + targetCurrent});\n\n// Choose charge mode\nif(Object.keys(commands).length > 0)\n    // set multiple parameters at once:\n    // http://192.168.0.75/api/set?bac=false&sdp=true\n    // each paramter is copied in the response:\n    // {\n    //   \"bac\": true,\n    //   \"sdp\": true\n    // }\n    msg.commands = commands;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1760,
+        "y": 1940,
+        "wires": [
+            [
+                "29f5871876eeb441"
+            ]
+        ]
+    },
+    {
+        "id": "29f5871876eeb441",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Monitor State Change",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1760,
+        "y": 1980,
+        "wires": []
+    },
+    {
+        "id": "77c05377fc1ee1f2",
+        "type": "http request",
+        "z": "7f238379090da3b0",
+        "name": "/api/set",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "http://lemmy2:5080/api/set",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 2820,
+        "y": 1440,
+        "wires": [
+            [
+                "2ab4b97a56ab922d"
+            ]
+        ]
+    },
+    {
+        "id": "e0f543694c7c7fec",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Set 6 Amps",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"targetCurrent\":6}",
+        "payloadType": "json",
+        "x": 1290,
+        "y": 1740,
+        "wires": [
+            [
+                "170eff26adbc7489"
+            ]
+        ]
+    },
+    {
+        "id": "2ab4b97a56ab922d",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Show Commands",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2850,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "0ddf3866962da9d1",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Start",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 1310,
+        "y": 1660,
+        "wires": [
+            [
+                "508ca3181197c560"
+            ]
+        ]
+    },
+    {
+        "id": "89c5dde840afa8ac",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Stop",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 1310,
+        "y": 1620,
+        "wires": [
+            [
+                "0d07a958b387fbe2"
+            ]
+        ]
+    },
+    {
+        "id": "f4645d1940ee65a4",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Disable Charging",
+        "props": [
+            {
+                "p": "chargeMode",
+                "v": "off",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 320,
+        "y": 1620,
+        "wires": [
+            [
+                "172291b267e64546"
+            ]
+        ]
+    },
+    {
+        "id": "32142ce2a0e13520",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Set Sun Mode",
+        "props": [
+            {
+                "p": "chargeMode",
+                "v": "sun",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 330,
+        "y": 1740,
+        "wires": [
+            [
+                "172291b267e64546"
+            ]
+        ]
+    },
+    {
+        "id": "d0c713ab578019d1",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Set Eco Mode",
+        "props": [
+            {
+                "p": "chargeMode",
+                "v": "eco",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 340,
+        "y": 1700,
+        "wires": [
+            [
+                "172291b267e64546"
+            ]
+        ]
+    },
+    {
+        "id": "172291b267e64546",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Set flow.chargeMode",
+        "rules": [
+            {
+                "t": "set",
+                "p": "chargeMode",
+                "pt": "flow",
+                "to": "chargeMode",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 1680,
+        "wires": [
+            [
+                "237f0e77d00e8430"
+            ]
+        ]
+    },
+    {
+        "id": "a2e4e6f9ef184ac3",
+        "type": "comment",
+        "z": "7f238379090da3b0",
+        "name": "Set Charge Mode",
+        "info": "",
+        "x": 220,
+        "y": 1580,
+        "wires": []
+    },
+    {
+        "id": "237f0e77d00e8430",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Charge Mode",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "chargeMode",
+        "targetType": "msg",
+        "statusVal": "chargeMode",
+        "statusType": "msg",
+        "x": 840,
+        "y": 1680,
+        "wires": []
+    },
+    {
+        "id": "48d3dfb86a932fa3",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Simulate Charger Status",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "consumption",
+                "v": "400",
+                "vt": "num"
+            },
+            {
+                "p": "pvPower",
+                "v": "1000",
+                "vt": "num"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"allowed2Charge\":true,\"curAmpsSet\":14,\"chargingState\":2,\"cableCurrentLimit\":20,\"phasesEnabled\":3,\"phasesLoading\":2,\"curChargingingPower\":0,\"minChargingCurrent\":6,\"maxChargingCurrent\":32,\"chargeAmountSinceCarConnected\":10382.29,\"chargeAmountTotal\":11607,\"forceSinglePhase\":false,\"forceState\":0}",
+        "payloadType": "json",
+        "x": 1770,
+        "y": 1860,
+        "wires": [
+            [
+                "9ce39f07027f05aa"
+            ]
+        ]
+    },
+    {
+        "id": "9ce39f07027f05aa",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Store averages to flow context",
+        "rules": [
+            {
+                "t": "set",
+                "p": "pvPower",
+                "pt": "flow",
+                "to": "pvPower",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "consumption",
+                "pt": "flow",
+                "to": "consumption",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1770,
+        "y": 1900,
+        "wires": [
+            [
+                "98c5663fcb64fc88"
+            ]
+        ]
+    },
+    {
+        "id": "f7f3498beec89f60",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Set Fast Mode",
+        "props": [
+            {
+                "p": "chargeMode",
+                "v": "fast",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 320,
+        "y": 1660,
+        "wires": [
+            [
+                "172291b267e64546"
+            ]
+        ]
+    },
+    {
+        "id": "56ddf2cb89285cfb",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Car Allowed to Charge",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.alw",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "allowed2Charge",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "allowed2Charge",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1060,
+        "y": 240,
+        "wires": [
+            [
+                "17d65e7fd4bde17b",
+                "726d7c5034665029"
+            ]
+        ]
+    },
+    {
+        "id": "17d65e7fd4bde17b",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Car Allowed to Charge",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "4b25545a03b70033",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter alw",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.alw",
+        "topi": "topic",
+        "x": 860,
+        "y": 240,
+        "wires": [
+            [
+                "56ddf2cb89285cfb"
+            ]
+        ]
+    },
+    {
+        "id": "241885f9b9d571b5",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Charge Current",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.amp",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "chargeCurrent",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "chargeCurrent",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1040,
+        "y": 300,
+        "wires": [
+            [
+                "80d437c03212d5b9"
+            ]
+        ]
+    },
+    {
+        "id": "4bf0dc55c67f6bb6",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter amp",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.amp",
+        "topi": "topic",
+        "x": 860,
+        "y": 300,
+        "wires": [
+            [
+                "241885f9b9d571b5"
+            ]
+        ]
+    },
+    {
+        "id": "80d437c03212d5b9",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Charge Current",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1320,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "ab06b49095e88274",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Charge Power",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.nrg[11]",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "chargePower",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "chargePower",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1040,
+        "y": 360,
+        "wires": [
+            [
+                "b86b3e38614fa44b",
+                "726d7c5034665029"
+            ]
+        ]
+    },
+    {
+        "id": "0a1a0c9a58861e39",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter nrg[11]",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.nrg[11]",
+        "topi": "topic",
+        "x": 870,
+        "y": 360,
+        "wires": [
+            [
+                "ab06b49095e88274"
+            ]
+        ]
+    },
+    {
+        "id": "b86b3e38614fa44b",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Charge Power",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1320,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "4d851e277cad6960",
+        "type": "switch",
+        "z": "7f238379090da3b0",
+        "name": "Check Car State",
+        "property": "payload.car",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "4",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 5,
+        "x": 1040,
+        "y": 440,
+        "wires": [
+            [
+                "3b15b9991510cf02"
+            ],
+            [
+                "5c1796400b79a753",
+                "726d7c5034665029"
+            ],
+            [
+                "13844a57b33ad87e"
+            ],
+            [
+                "fef13efbef4be4a7"
+            ],
+            [
+                "45cc319b2dd0c96a"
+            ]
+        ]
+    },
+    {
+        "id": "45cc319b2dd0c96a",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "counter",
+        "x": 1070,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "3b15b9991510cf02",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "1: Idle",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "counter",
+        "x": 1290,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "5c1796400b79a753",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "2: Charging",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "counter",
+        "x": 1310,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "13844a57b33ad87e",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "3: Wait for Car",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "counter",
+        "x": 1320,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "fef13efbef4be4a7",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "4: Complete",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "counter",
+        "x": 1310,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "4c6ce5665ab29259",
+        "type": "comment",
+        "z": "7f238379090da3b0",
+        "name": "Set defaults",
+        "info": "",
+        "x": 1470,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "0dfc298d51977d7e",
+        "type": "comment",
+        "z": "7f238379090da3b0",
+        "name": "Apply Charge Control Mode",
+        "info": "",
+        "x": 1520,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "beb1857f6b623fd4",
+        "type": "comment",
+        "z": "7f238379090da3b0",
+        "name": "Notification",
+        "info": "",
+        "x": 1470,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "9f382815c8981356",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "PvPower",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "pvPower",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "$sum(msg.payload.production.*.p)",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 1980,
+        "wires": [
+            [
+                "b9a616e09a519abb"
+            ]
+        ]
+    },
+    {
+        "id": "0b81833e66e39696",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Consumption",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "consumption",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "$sum(msg.payload.\"total-consumption\".*.p)",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 2020,
+        "wires": [
+            [
+                "b9a616e09a519abb"
+            ]
+        ]
+    },
+    {
+        "id": "b9a616e09a519abb",
+        "type": "smooth",
+        "z": "7f238379090da3b0",
+        "name": "average",
+        "property": "payload",
+        "action": "mean",
+        "count": "60",
+        "round": "1",
+        "mult": "multi",
+        "reduce": true,
+        "x": 760,
+        "y": 2000,
+        "wires": [
+            [
+                "a5f147fe2f86da6f",
+                "512d67a351bbe98a"
+            ]
+        ]
+    },
+    {
+        "id": "a5f147fe2f86da6f",
+        "type": "switch",
+        "z": "7f238379090da3b0",
+        "name": "switch topic",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "pvPower",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "consumption",
+                "vt": "str"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 930,
+        "y": 2000,
+        "wires": [
+            [
+                "69a5ed537f0c2b56"
+            ],
+            [
+                "81f2b4b2dad2d32c"
+            ]
+        ]
+    },
+    {
+        "id": "77819c91dffb2369",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "PvPower",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "pvPower",
+        "statusType": "auto",
+        "x": 1300,
+        "y": 1940,
+        "wires": []
+    },
+    {
+        "id": "69a5ed537f0c2b56",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Store to context",
+        "rules": [
+            {
+                "t": "set",
+                "p": "pvPower",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1120,
+        "y": 1980,
+        "wires": [
+            [
+                "77819c91dffb2369",
+                "2917a131e386358e"
+            ]
+        ]
+    },
+    {
+        "id": "81f2b4b2dad2d32c",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Store to context",
+        "rules": [
+            {
+                "t": "set",
+                "p": "consumption",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1120,
+        "y": 2020,
+        "wires": [
+            [
+                "6754df5aaa2080c7",
+                "2917a131e386358e"
+            ]
+        ]
+    },
+    {
+        "id": "6754df5aaa2080c7",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Consumption",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1310,
+        "y": 2060,
+        "wires": []
+    },
+    {
+        "id": "512d67a351bbe98a",
+        "type": "function",
+        "z": "7f238379090da3b0",
+        "name": "Time of last update",
+        "func": "flow.set(\"lastEnvoyUpdate\", msg.time);\n\nlet now = new Date(msg.time);\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Last update: \" + now.toISOString() });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 2060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fa9bec7af853ca1f",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter car",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.car",
+        "topi": "topic",
+        "x": 860,
+        "y": 440,
+        "wires": [
+            [
+                "4d851e277cad6960"
+            ]
+        ]
+    },
+    {
+        "id": "e52ca0559bce6ca3",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter cbl",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.cbl",
+        "topi": "topic",
+        "x": 860,
+        "y": 680,
+        "wires": [
+            [
+                "0ba0eeaa20b63f8a"
+            ]
+        ]
+    },
+    {
+        "id": "0ba0eeaa20b63f8a",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Cable Current Limit",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.cbl",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "cableCurrentLimit",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "cableCurrentLimit",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1050,
+        "y": 680,
+        "wires": [
+            [
+                "e1f790f0af03f01c"
+            ]
+        ]
+    },
+    {
+        "id": "e1f790f0af03f01c",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Cable Current Limit",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1330,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "2116b6e552040ca9",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Preserve go-e Status",
+        "rules": [
+            {
+                "t": "set",
+                "p": "goe",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 500,
+        "y": 440,
+        "wires": [
+            [
+                "4b25545a03b70033",
+                "4bf0dc55c67f6bb6",
+                "0a1a0c9a58861e39",
+                "fa9bec7af853ca1f",
+                "e52ca0559bce6ca3",
+                "99e747b49d27367f",
+                "1b6aed5b91a69387",
+                "58a4fcf600189047",
+                "b93d780f594ed608",
+                "5cfc6fd428f789b1",
+                "623303aedb2f588b",
+                "00e67779ea8b5e35",
+                "85a3f1e9855674b5"
+            ]
+        ]
+    },
+    {
+        "id": "807541f8e0c9d12f",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter pha",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.pha",
+        "topi": "topic",
+        "x": 860,
+        "y": 740,
+        "wires": [
+            [
+                "d598e31b7968642a"
+            ]
+        ]
+    },
+    {
+        "id": "99e747b49d27367f",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Count Active Phases",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.pha",
+                "pt": "msg",
+                "to": "(\t    $countActive := function($acc, $obj){$obj ? $acc + 1 : $acc};\t    $reduce(payload.pha[[0,1,2]], $countActive, 0)\t)",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 740,
+        "wires": [
+            [
+                "807541f8e0c9d12f"
+            ]
+        ]
+    },
+    {
+        "id": "d598e31b7968642a",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Active Phases",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.pha",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "activePhases",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "activePhases",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1040,
+        "y": 740,
+        "wires": [
+            [
+                "b0947bf194770bf2"
+            ]
+        ]
+    },
+    {
+        "id": "b0947bf194770bf2",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Active Phases",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1320,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "e8e1c0ab90502d46",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Monitor Raw Data",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "1b6aed5b91a69387",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Count Charging Phases",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.nrg",
+                "pt": "msg",
+                "to": "(\t    $countCharging := function($acc, $obj){$obj > 1 ? $acc + 1 : $acc};\t    $reduce(payload.nrg[[4,5,6]], $countCharging, 0)\t)",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 800,
+        "wires": [
+            [
+                "29821485753971be"
+            ]
+        ]
+    },
+    {
+        "id": "29821485753971be",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter nrg",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.nrg",
+        "topi": "topic",
+        "x": 860,
+        "y": 800,
+        "wires": [
+            [
+                "fe19d31bf0424b95"
+            ]
+        ]
+    },
+    {
+        "id": "fe19d31bf0424b95",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Charging Phases",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.nrg",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "chargingPhases",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "chargingPhases",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1050,
+        "y": 800,
+        "wires": [
+            [
+                "589bdfcd0fa8f297",
+                "726d7c5034665029"
+            ]
+        ]
+    },
+    {
+        "id": "589bdfcd0fa8f297",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Charging Phases",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1330,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "685dbe308b8db947",
+        "type": "comment",
+        "z": "7f238379090da3b0",
+        "name": "Capture Status and Control Mode",
+        "info": "",
+        "x": 410,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "58a4fcf600189047",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter mca",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.mca",
+        "topi": "topic",
+        "x": 860,
+        "y": 860,
+        "wires": [
+            [
+                "c0a753ee1e98bf27"
+            ]
+        ]
+    },
+    {
+        "id": "c0a753ee1e98bf27",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Min Charge Current",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.mca",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "minChargeCurrent",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "minChargeCurrent",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1050,
+        "y": 860,
+        "wires": [
+            [
+                "1be0713a35721f50"
+            ]
+        ]
+    },
+    {
+        "id": "1be0713a35721f50",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Min Charge Current",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1330,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "b93d780f594ed608",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter ama",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.ama",
+        "topi": "topic",
+        "x": 860,
+        "y": 920,
+        "wires": [
+            [
+                "7cfc3161b94129d6"
+            ]
+        ]
+    },
+    {
+        "id": "7cfc3161b94129d6",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Max Charge Current",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.ama",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "maxChargeCurrent",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "miaxChargeCurrent",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1060,
+        "y": 920,
+        "wires": [
+            [
+                "7723ab2f109bc88b"
+            ]
+        ]
+    },
+    {
+        "id": "7723ab2f109bc88b",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Max Charge Current",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "5cfc6fd428f789b1",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter wh",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.wh",
+        "topi": "topic",
+        "x": 860,
+        "y": 980,
+        "wires": [
+            [
+                "752ac87f802e6024"
+            ]
+        ]
+    },
+    {
+        "id": "752ac87f802e6024",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Charge Amount Current Session",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.wh",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "chargeAmount",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "chargeAmount",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1090,
+        "y": 980,
+        "wires": [
+            [
+                "0e9d7a684dfa9036"
+            ]
+        ]
+    },
+    {
+        "id": "0e9d7a684dfa9036",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Charge Amount Current Session",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1370,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "623303aedb2f588b",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter eto",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.eto",
+        "topi": "topic",
+        "x": 860,
+        "y": 1040,
+        "wires": [
+            [
+                "5fb45ffd3ec01e77"
+            ]
+        ]
+    },
+    {
+        "id": "5fb45ffd3ec01e77",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Total Charge Amount",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.eto",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "totalChargeAmount",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "totalChargeAmount",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1060,
+        "y": 1040,
+        "wires": [
+            [
+                "7353d46058b45987"
+            ]
+        ]
+    },
+    {
+        "id": "7353d46058b45987",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Total Charge Amount",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "00e67779ea8b5e35",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter fsp",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.fsp",
+        "topi": "topic",
+        "x": 860,
+        "y": 1100,
+        "wires": [
+            [
+                "8ad8def1ad2a3c15"
+            ]
+        ]
+    },
+    {
+        "id": "8ad8def1ad2a3c15",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Force Single Phase",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.fsp",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "forceSinglePhase",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "forceSinglePhase",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1050,
+        "y": 1100,
+        "wires": [
+            [
+                "9d5425e88089ad8b",
+                "726d7c5034665029"
+            ]
+        ]
+    },
+    {
+        "id": "9d5425e88089ad8b",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Force Single Phase",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1330,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "85a3f1e9855674b5",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter frc",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.frc",
+        "topi": "topic",
+        "x": 860,
+        "y": 1160,
+        "wires": [
+            [
+                "0f4d35d90fa4e731"
+            ]
+        ]
+    },
+    {
+        "id": "0f4d35d90fa4e731",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Force State",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.frc",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "forceState",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "forceState",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1030,
+        "y": 1160,
+        "wires": [
+            [
+                "907191cad8a474c5",
+                "726d7c5034665029"
+            ]
+        ]
+    },
+    {
+        "id": "907191cad8a474c5",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Force State",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 1310,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "13b19d60757c65da",
+        "type": "delay",
+        "z": "7f238379090da3b0",
+        "name": "1 msg / 30s",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "30",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 2,
+        "x": 410,
+        "y": 1260,
+        "wires": [
+            [
+                "5e0ac2b654e8c51b"
+            ],
+            [
+                "7aedfca1dbc12c6e"
+            ]
+        ]
+    },
+    {
+        "id": "7aedfca1dbc12c6e",
+        "type": "debug",
+        "z": "7f238379090da3b0",
+        "name": "Show dropped msg",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 1440,
+        "wires": []
+    },
+    {
+        "id": "ccaa29ef0f792afb",
+        "type": "switch",
+        "z": "7f238379090da3b0",
+        "name": "Switch Charge Mode",
+        "property": "chargeMode",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "fast",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "eco",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "sun",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 880,
+        "y": 1360,
+        "wires": [
+            [
+                "179082250b81fccf"
+            ],
+            [
+                "308a9f7880b69489"
+            ],
+            [
+                "0d533ef8ae0d6fb1"
+            ]
+        ]
+    },
+    {
+        "id": "f06466dbd95999cd",
+        "type": "switch",
+        "z": "7f238379090da3b0",
+        "name": "Chargy != 'off'?",
+        "property": "forceState",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 860,
+        "y": 1240,
+        "wires": [
+            [
+                "0d07a958b387fbe2"
+            ]
+        ]
+    },
+    {
+        "id": "179082250b81fccf",
+        "type": "function",
+        "z": "7f238379090da3b0",
+        "name": "Enable Max Charging",
+        "func": "msg.payload = null;\nlet commands = {};\n\nif(flow.get(\"forceSinglePhase\")) {\n    commands.psm = 2;\n}\n\nlet maxChargeCurrent = flow.get(\"maxChargeCurrent\");\nif (flow.get(\"chargeCurrent\") < maxChargeCurrent) {\n    commands.amp = maxChargeCurrent;\n}\n\nif (Object.keys(commands).length > 0) {\n    // set multiple parameters at once:\n    // http://192.168.0.75/api/set?bac=false&sdp=true\n    // each paramter is copied in the response:\n    // {\n    //   \"bac\": true,\n    //   \"sdp\": true\n    // }\n    msg.payload = commands;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1660,
+        "y": 1340,
+        "wires": [
+            [
+                "2ab4b97a56ab922d"
+            ]
+        ]
+    },
+    {
+        "id": "7adf4cbaa6a1f4cd",
+        "type": "switch",
+        "z": "7f238379090da3b0",
+        "name": "Chargy == 'off'?",
+        "property": "forceState",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 2200,
+        "y": 1400,
+        "wires": [
+            [
+                "508ca3181197c560"
+            ],
+            [
+                "c1e698c4e0ba7e1f"
+            ]
+        ]
+    },
+    {
+        "id": "5e0ac2b654e8c51b",
+        "type": "switch",
+        "z": "7f238379090da3b0",
+        "name": "Charge Mode == Off?",
+        "property": "chargeMode",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "off",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 640,
+        "y": 1260,
+        "wires": [
+            [
+                "f06466dbd95999cd"
+            ],
+            [
+                "ccaa29ef0f792afb"
+            ]
+        ]
+    },
+    {
+        "id": "308a9f7880b69489",
+        "type": "function",
+        "z": "7f238379090da3b0",
+        "name": "Calculate ECO Surplus",
+        "func": "let propertyConsumption = flow.get(\"consumption\") - flow.get(\"chargePower\");\nmsg.surplus = flow.get(\"pvPower\") - propertyConsumption;\n\nlet now = new Date(flow.get(\"lastEnvoyUpdate\"));\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Surplus = \" + msg.surplus + \" at \" + now.toISOString() });\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 1380,
+        "wires": [
+            [
+                "42148edf51f20b50"
+            ]
+        ]
+    },
+    {
+        "id": "0d533ef8ae0d6fb1",
+        "type": "function",
+        "z": "7f238379090da3b0",
+        "name": "Calculate SUN Surplus",
+        "func": "msg.surplus = flow.get(\"pvPower\");\n\nlet now = new Date(flow.get(\"lastEnvoyUpdate\"));\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Surplus = \" + msg.surplus + \" at \" + now.toISOString() });\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 1440,
+        "wires": [
+            [
+                "42148edf51f20b50"
+            ]
+        ]
+    },
+    {
+        "id": "42148edf51f20b50",
+        "type": "function",
+        "z": "7f238379090da3b0",
+        "name": "Target Current",
+        "func": "msg.targetCurrent = Math.floor(msg.surplus / flow.get(\"chargingPhases\") / 230);\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Target Current = \" + msg.targetCurrent });\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1420,
+        "y": 1420,
+        "wires": [
+            [
+                "170eff26adbc7489"
+            ]
+        ]
+    },
+    {
+        "id": "170eff26adbc7489",
+        "type": "switch",
+        "z": "7f238379090da3b0",
+        "name": "Target Current acceptable?",
+        "property": "targetCurrent",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "btwn",
+                "v": "minChargeCurrent",
+                "vt": "flow",
+                "v2": "15",
+                "v2t": "num"
+            },
+            {
+                "t": "lt",
+                "v": "minChargeCurrent",
+                "vt": "flow"
+            },
+            {
+                "t": "gte",
+                "v": "18",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 1680,
+        "y": 1420,
+        "wires": [
+            [
+                "85ea5faa6b7aa7ce"
+            ],
+            [
+                "95a6874f581d8340"
+            ],
+            [
+                "c388fcb68adf7ad2"
+            ]
+        ]
+    },
+    {
+        "id": "85ea5faa6b7aa7ce",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter targetCurrent",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "targetCurrent",
+        "topi": "topic",
+        "x": 1950,
+        "y": 1400,
+        "wires": [
+            [
+                "7adf4cbaa6a1f4cd"
+            ]
+        ]
+    },
+    {
+        "id": "c1e698c4e0ba7e1f",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Advice Charge Current",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\t    \"amp\": msg.targetCurrent\t}",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2500,
+        "y": 1400,
+        "wires": [
+            [
+                "2ab4b97a56ab922d",
+                "77c05377fc1ee1f2"
+            ]
+        ]
+    },
+    {
+        "id": "95a6874f581d8340",
+        "type": "switch",
+        "z": "7f238379090da3b0",
+        "name": "Step down phases?",
+        "property": "forceSinglePhase",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "false",
+                "vt": "flow"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1410,
+        "y": 1500,
+        "wires": [
+            [
+                "7904eea616dd2d22"
+            ],
+            [
+                "0d07a958b387fbe2"
+            ]
+        ]
+    },
+    {
+        "id": "726d7c5034665029",
+        "type": "delay",
+        "z": "7f238379090da3b0",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 220,
+        "y": 1260,
+        "wires": [
+            [
+                "13b19d60757c65da"
+            ]
+        ]
+    },
+    {
+        "id": "7904eea616dd2d22",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Force Single Phase",
+        "rules": [
+            {
+                "t": "set",
+                "p": "phaseMode",
+                "pt": "msg",
+                "to": "1",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1670,
+        "y": 1540,
+        "wires": [
+            [
+                "f7f6a973897d4a95"
+            ]
+        ]
+    },
+    {
+        "id": "c388fcb68adf7ad2",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Force Multi-Phase",
+        "rules": [
+            {
+                "t": "set",
+                "p": "phaseMode",
+                "pt": "msg",
+                "to": "2",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1670,
+        "y": 1500,
+        "wires": [
+            [
+                "f7f6a973897d4a95"
+            ]
+        ]
+    },
+    {
+        "id": "58f59ea1399dbd29",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Change Phase Mode",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"psm\": msg.phaseMode}",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2500,
+        "y": 1520,
+        "wires": [
+            [
+                "2ab4b97a56ab922d",
+                "77c05377fc1ee1f2"
+            ]
+        ]
+    },
+    {
+        "id": "f7f6a973897d4a95",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter phaseMode",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "phaseMode",
+        "topi": "topic",
+        "x": 1950,
+        "y": 1520,
+        "wires": [
+            [
+                "b35e0353ddaaf16b"
+            ]
+        ]
+    },
+    {
+        "id": "0d07a958b387fbe2",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Disable Charging",
+        "rules": [
+            {
+                "t": "set",
+                "p": "chargeMode",
+                "pt": "msg",
+                "to": "1",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1670,
+        "y": 1220,
+        "wires": [
+            [
+                "a4f33a4c6526cedc"
+            ]
+        ]
+    },
+    {
+        "id": "508ca3181197c560",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Enable Charging",
+        "rules": [
+            {
+                "t": "set",
+                "p": "chargeMode",
+                "pt": "msg",
+                "to": "2",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2060,
+        "y": 1280,
+        "wires": [
+            [
+                "a4f33a4c6526cedc"
+            ]
+        ]
+    },
+    {
+        "id": "a88bc9fc9edb4e93",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Set Charge Mode",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\"frc\": msg.chargeMode}",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2610,
+        "y": 1260,
+        "wires": [
+            [
+                "2ab4b97a56ab922d",
+                "77c05377fc1ee1f2"
+            ]
+        ]
+    },
+    {
+        "id": "a4f33a4c6526cedc",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "filter chargeMode",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "chargeMode",
+        "topi": "topic",
+        "x": 2370,
+        "y": 1260,
+        "wires": [
+            [
+                "a88bc9fc9edb4e93"
+            ]
+        ]
+    },
+    {
+        "id": "57f650e69040f939",
+        "type": "comment",
+        "z": "7f238379090da3b0",
+        "name": "Test knobs",
+        "info": "",
+        "x": 1160,
+        "y": 1640,
+        "wires": []
+    },
+    {
+        "id": "a7a0b072734b3750",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Force Multi-Phase",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 1270,
+        "y": 1820,
+        "wires": [
+            [
+                "c388fcb68adf7ad2"
+            ]
+        ]
+    },
+    {
+        "id": "f509c085643ac368",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Force Single Phase",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 1270,
+        "y": 1860,
+        "wires": [
+            [
+                "7904eea616dd2d22"
+            ]
+        ]
+    },
+    {
+        "id": "59eb545dac9a28b5",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Set 16 Amps",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"targetCurrent\":16}",
+        "payloadType": "json",
+        "x": 1290,
+        "y": 1780,
+        "wires": [
+            [
+                "170eff26adbc7489"
+            ]
+        ]
+    },
+    {
+        "id": "3cf3f3741f31d5c6",
+        "type": "inject",
+        "z": "7f238379090da3b0",
+        "name": "Set 4 Amps",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"targetCurrent\":4}",
+        "payloadType": "json",
+        "x": 1290,
+        "y": 1700,
+        "wires": [
+            [
+                "170eff26adbc7489"
+            ]
+        ]
+    },
+    {
+        "id": "2917a131e386358e",
+        "type": "rbe",
+        "z": "7f238379090da3b0",
+        "name": "Big Change?",
+        "func": "deadband",
+        "gap": "500",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 1310,
+        "y": 2000,
+        "wires": [
+            [
+                "726d7c5034665029"
+            ]
+        ]
+    },
+    {
+        "id": "b35e0353ddaaf16b",
+        "type": "switch",
+        "z": "7f238379090da3b0",
+        "name": "Chargy == 'off'?",
+        "property": "forceState",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 2200,
+        "y": 1520,
+        "wires": [
+            [
+                "508ca3181197c560"
+            ],
+            [
+                "58f59ea1399dbd29"
+            ]
+        ]
+    }
+]

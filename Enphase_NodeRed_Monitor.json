@@ -1,0 +1,592 @@
+[
+    {
+        "id": "52721e447cd68db3",
+        "type": "tab",
+        "label": "Enphase",
+        "disabled": false,
+        "info": "https://decramy.net/2021/08/Enphase-Envoy-S-Metered-to-InfluxDB-using-Nodered.html",
+        "env": []
+    },
+    {
+        "id": "830c8b80.f89718",
+        "type": "inject",
+        "z": "52721e447cd68db3",
+        "name": "Start / Restart / Unpause stream",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 300,
+        "wires": [
+            [
+                "5944b091.17285"
+            ]
+        ]
+    },
+    {
+        "id": "de79afb2.f459b",
+        "type": "inject",
+        "z": "52721e447cd68db3",
+        "name": "Pause stream",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 350,
+        "y": 420,
+        "wires": [
+            [
+                "31c2c1a4.b6aabe"
+            ]
+        ]
+    },
+    {
+        "id": "31c2c1a4.b6aabe",
+        "type": "change",
+        "z": "52721e447cd68db3",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "pause",
+                "pt": "msg",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 420,
+        "wires": [
+            [
+                "50364aa0.f4b3d4"
+            ]
+        ]
+    },
+    {
+        "id": "fc7709e7.f95788",
+        "type": "inject",
+        "z": "52721e447cd68db3",
+        "name": "Stop stream",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 350,
+        "y": 380,
+        "wires": [
+            [
+                "fc633663.b0ce48"
+            ]
+        ]
+    },
+    {
+        "id": "fc633663.b0ce48",
+        "type": "change",
+        "z": "52721e447cd68db3",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stop",
+                "pt": "msg",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 380,
+        "wires": [
+            [
+                "50364aa0.f4b3d4"
+            ]
+        ]
+    },
+    {
+        "id": "50364aa0.f4b3d4",
+        "type": "sse-client",
+        "z": "52721e447cd68db3",
+        "name": "",
+        "url": "http://envoy/stream/meter",
+        "events": [
+            "message"
+        ],
+        "headers": {},
+        "proxy": "",
+        "restart": true,
+        "rejectUnauthorized": false,
+        "withCredentials": true,
+        "timeout": "100",
+        "x": 810,
+        "y": 400,
+        "wires": [
+            [
+                "6fa504f8fca90df3"
+            ]
+        ]
+    },
+    {
+        "id": "5944b091.17285",
+        "type": "http request",
+        "z": "52721e447cd68db3",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://envoy/ivp/meters",
+        "tls": "a0af54c0.3a7438",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "bearer",
+        "senderr": false,
+        "headers": [],
+        "x": 550,
+        "y": 300,
+        "wires": [
+            [
+                "5e0c1620.061b18"
+            ]
+        ]
+    },
+    {
+        "id": "5e0c1620.061b18",
+        "type": "function",
+        "z": "52721e447cd68db3",
+        "name": "Set Cookie",
+        "func": "msg.headers = {'Cookie': 'sessionId=' + msg.responseCookies.sessionId.value};\nflow.set(\"sessionHeader\", msg.headers);\nflow.set(\"messageCount\", 0);\nlet now = new Date();\nlet sessionStartTime = now.getTime();\nflow.set(\"sessionStartTime\", sessionStartTime); // in milliseconds\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Cookie: \" + msg.responseCookies.sessionId.value + \", sessionStartTime: \" + now.toISOString() });\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 300,
+        "wires": [
+            [
+                "50364aa0.f4b3d4"
+            ]
+        ]
+    },
+    {
+        "id": "6fa504f8fca90df3",
+        "type": "json",
+        "z": "52721e447cd68db3",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 270,
+        "y": 520,
+        "wires": [
+            [
+                "3a30b6f605c84af2"
+            ]
+        ],
+        "info": "{\n    \"event\": \"message\",\n    \"payload\": {\n        \"production\": {\n            \"ph-a\": {\n                \"p\": -2.799,\n                \"q\": 128.69,\n                \"s\": 133.345,\n                \"v\": 235.871,\n                \"i\": 0.566,\n                \"pf\": 0,\n                \"f\": 50.06\n            },\n            \"ph-b\": {\n                \"p\": -2.225,\n                \"q\": 142.044,\n                \"s\": 142.044,\n                \"v\": 237.275,\n                \"i\": 0.599,\n                \"pf\": 0,\n                \"f\": 50.06\n            },\n            \"ph-c\": {\n                \"p\": -3.357,\n                \"q\": 146.776,\n                \"s\": 150.621,\n                \"v\": 237.164,\n                \"i\": 0.634,\n                \"pf\": 0,\n                \"f\": 50.06\n            }\n        },\n        \"net-consumption\": {\n            \"ph-a\": {\n                \"p\": 205.099,\n                \"q\": -217.1,\n                \"s\": 348.172,\n                \"v\": 236.061,\n                \"i\": 1.474,\n                \"pf\": 0.56,\n                \"f\": 50\n            },\n            \"ph-b\": {\n                \"p\": 215.973,\n                \"q\": -156.338,\n                \"s\": 273.732,\n                \"v\": 237.492,\n                \"i\": 1.153,\n                \"pf\": 0.81,\n                \"f\": 50\n            },\n            \"ph-c\": {\n                \"p\": 15.529,\n                \"q\": -185.114,\n                \"s\": 198.776,\n                \"v\": 237.309,\n                \"i\": 0.837,\n                \"pf\": 0.07,\n                \"f\": 50\n            }\n        },\n        \"total-consumption\": {\n            \"ph-a\": {\n                \"p\": 202.301,\n                \"q\": -345.791,\n                \"s\": 481.377,\n                \"v\": 235.966,\n                \"i\": 2.04,\n                \"pf\": 0.42,\n                \"f\": 50.03\n            },\n            \"ph-b\": {\n                \"p\": 213.748,\n                \"q\": -298.382,\n                \"s\": 416.01,\n                \"v\": 237.383,\n                \"i\": 1.752,\n                \"pf\": 0.51,\n                \"f\": 50.03\n            },\n            \"ph-c\": {\n                \"p\": 12.171,\n                \"q\": -331.89,\n                \"s\": 348.895,\n                \"v\": 237.236,\n                \"i\": 1.471,\n                \"pf\": 0.03,\n                \"f\": 50.03\n            }\n        }\n    },\n    \"_msgid\": \"30c4f329fc74c69f\"\n}"
+    },
+    {
+        "id": "29e442028acaef29",
+        "type": "function",
+        "z": "52721e447cd68db3",
+        "name": "reconstruct data",
+        "func": "// Influx:\n// If msg.payload is an array containing two objects, \n// the first object will be written as the set of \n// named fields, the second is the set of named tags.\n\n//{\n//    \"event\": \"message\",\n//    \"payload\": {\n//        \"p\": -2.637,\n//        \"q\": 129.101,\n//        \"s\": 134.177,\n//        \"v\": 236.605,\n//        \"i\": 0.566,\n//        \"pf\": 0,\n//        \"f\": 50\n//    },\n//    \"parts\": {\n//        \"parts\": {\n//            \"id\": \"81ae3e03de25e83d\",\n//            \"type\": \"object\",\n//            \"key\": \"production\",\n//            \"index\": 0,\n//            \"count\": 3\n//        },\n//        \"id\": \"261188553298706d\",\n//        \"type\": \"object\",\n//        \"key\": \"ph-a\",\n//        \"index\": 0,\n//        \"count\": 3\n//    },\n//    \"topic\": \"production\",\n//    \"phase\": \"ph-a\",\n//    \"_msgid\": \"bdd912b420cee96b\"\n//}\n\nlet fields = {\n  \"wNow\": (msg.payload.p),\n  \"reactPower\": (msg.payload.q),\n  \"apprntPwr\": (msg.payload.s),\n  \"rmsVoltage\": (msg.payload.v),\n  \"rmsCurrent\": (msg.payload.i),\n  \"pwrFactor\": (msg.payload.pf),\n  \"frequency\": (msg.payload.f),\n  // time: new Date().getTime() -> set time precision to ms in influx out node!\n  \"time\": (msg.time)\n};\n\nlet tags = {\n  \"topic\": (msg.topic),\n  \"phase\": (msg.phase)\n};\n\nmsg.payload = [fields,tags]\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 620,
+        "wires": [
+            [
+                "d3776eae5ffb7e06",
+                "8e1dfedd9994b9aa"
+            ]
+        ]
+    },
+    {
+        "id": "e498a42fbb59c40c",
+        "type": "split",
+        "z": "52721e447cd68db3",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "phase",
+        "x": 410,
+        "y": 620,
+        "wires": [
+            [
+                "29e442028acaef29"
+            ]
+        ]
+    },
+    {
+        "id": "29dd2e5fd14716ea",
+        "type": "split",
+        "z": "52721e447cd68db3",
+        "name": "",
+        "splt": "",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "topic",
+        "x": 230,
+        "y": 620,
+        "wires": [
+            [
+                "e498a42fbb59c40c"
+            ]
+        ]
+    },
+    {
+        "id": "d3776eae5ffb7e06",
+        "type": "debug",
+        "z": "52721e447cd68db3",
+        "name": "DBG Influx",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "e824c1370ceb88d6",
+        "type": "comment",
+        "z": "52721e447cd68db3",
+        "name": "Live View -> /stream/meter",
+        "info": "",
+        "x": 250,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "71cc99b80ef710d5",
+        "type": "http request",
+        "z": "52721e447cd68db3",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://envoy/api/v1/production/inverters",
+        "tls": "a0af54c0.3a7438",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 690,
+        "y": 840,
+        "wires": [
+            [
+                "1fc70e90b9d9e83c"
+            ]
+        ]
+    },
+    {
+        "id": "843f1c3427609a9d",
+        "type": "debug",
+        "z": "52721e447cd68db3",
+        "name": "DBG Inverter Details",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "f2698c3734489db8",
+        "type": "comment",
+        "z": "52721e447cd68db3",
+        "name": "Inverter Details -> /api/v1/production/inverters",
+        "info": "",
+        "x": 310,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "71e55ff3ce185234",
+        "type": "change",
+        "z": "52721e447cd68db3",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "headers",
+                "pt": "msg",
+                "to": "sessionHeader",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 840,
+        "wires": [
+            [
+                "71cc99b80ef710d5"
+            ]
+        ]
+    },
+    {
+        "id": "661a0a53195e8110",
+        "type": "inject",
+        "z": "52721e447cd68db3",
+        "name": "Start Continuous",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 230,
+        "y": 840,
+        "wires": [
+            [
+                "71e55ff3ce185234"
+            ]
+        ]
+    },
+    {
+        "id": "1fc70e90b9d9e83c",
+        "type": "json",
+        "z": "52721e447cd68db3",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 210,
+        "y": 940,
+        "wires": [
+            [
+                "fedb39902b81a940"
+            ]
+        ]
+    },
+    {
+        "id": "fedb39902b81a940",
+        "type": "split",
+        "z": "52721e447cd68db3",
+        "name": "",
+        "splt": "",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 370,
+        "y": 940,
+        "wires": [
+            [
+                "642a092484918379"
+            ]
+        ]
+    },
+    {
+        "id": "642a092484918379",
+        "type": "function",
+        "z": "52721e447cd68db3",
+        "name": "reconstruct data",
+        "func": "// Influx:\n// If msg.payload is an array containing two objects, \n// the first object will be written as the set of \n// named fields, the second is the set of named tags.\n\n//{\n//  \"serialNumber\": \"122213000087\",\n//  \"lastReportDate\": 1676046738,\n//  \"devType\": 1,\n//  \"lastReportWatts\": 0,\n//  \"maxReportWatts\": 0\n//}\n\nlet fields = {\n  \"curWatts\": (msg.payload.lastReportWatts),\n  \"maxWatts\": (msg.payload.maxReportWatts)\n  //time: new Date().getTime() -> set time precision to ms in influx out node!\n};\n\nlet tags = {\n  \"inverter\": (msg.payload.serialNumber)\n};\n\nmsg.payload = [fields,tags]\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 940,
+        "wires": [
+            [
+                "e722110d7a313b58",
+                "843f1c3427609a9d"
+            ]
+        ]
+    },
+    {
+        "id": "8e1dfedd9994b9aa",
+        "type": "influxdb out",
+        "z": "52721e447cd68db3",
+        "influxdb": "61e1038ad2a9bd11",
+        "name": "Influxdb envoy",
+        "measurement": "envoy_meter",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "SloBloLabs",
+        "bucket": "enphase",
+        "x": 880,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "e722110d7a313b58",
+        "type": "influxdb out",
+        "z": "52721e447cd68db3",
+        "influxdb": "61e1038ad2a9bd11",
+        "name": "Influxdb envoy",
+        "measurement": "envoy_meter",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "s",
+        "retentionPolicyV18Flux": "",
+        "org": "SloBloLabs",
+        "bucket": "enphase",
+        "x": 860,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "8f777435f79f3812",
+        "type": "debug",
+        "z": "52721e447cd68db3",
+        "name": "New Measurement",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "3602cfb264d30dd5",
+        "type": "link out",
+        "z": "52721e447cd68db3",
+        "name": "Send Enphase Raw Data",
+        "mode": "link",
+        "links": [
+            "aad26db58801ddcc"
+        ],
+        "x": 715,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "3a30b6f605c84af2",
+        "type": "function",
+        "z": "52721e447cd68db3",
+        "name": "Calculate Timestamp",
+        "func": "let sessionStartTime = flow.get(\"sessionStartTime\");\nlet messageCount = flow.get(\"messageCount\");\nflow.set(\"messageCount\", messageCount + 1);\n\nmsg.time = sessionStartTime + messageCount * 1000;\nlet now = new Date(msg.time);\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Time: \" + now.toISOString() });\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 520,
+        "wires": [
+            [
+                "29dd2e5fd14716ea",
+                "3602cfb264d30dd5",
+                "8f777435f79f3812"
+            ]
+        ]
+    },
+    {
+        "id": "a0af54c0.3a7438",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "",
+        "verifyservercert": false,
+        "alpnprotocol": ""
+    },
+    {
+        "id": "61e1038ad2a9bd11",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "influx envoy",
+        "usetls": false,
+        "tls": "a0af54c0.3a7438",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": false
+    }
+]
