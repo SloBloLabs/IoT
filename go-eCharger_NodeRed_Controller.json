@@ -48,6 +48,7 @@
         "authType": "",
         "senderr": false,
         "headers": [],
+        "credentials": {},
         "x": 250,
         "y": 340,
         "wires": [
@@ -150,8 +151,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 2000,
-        "y": 360,
+        "x": 3120,
+        "y": 240,
         "wires": [
             [
                 "29f5871876eeb441"
@@ -171,8 +172,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 2000,
-        "y": 400,
+        "x": 3120,
+        "y": 280,
         "wires": []
     },
     {
@@ -216,8 +217,8 @@
         "topic": "",
         "payload": "{\"targetCurrent\":6}",
         "payloadType": "json",
-        "x": 2370,
-        "y": 1400,
+        "x": 2270,
+        "y": 700,
         "wires": [
             [
                 "170eff26adbc7489"
@@ -252,8 +253,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 2390,
-        "y": 1320,
+        "x": 2290,
+        "y": 620,
         "wires": [
             [
                 "508ca3181197c560"
@@ -271,8 +272,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 2390,
-        "y": 1280,
+        "x": 2290,
+        "y": 580,
         "wires": [
             [
                 "0d07a958b387fbe2"
@@ -296,8 +297,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 1540,
-        "y": 1400,
+        "x": 1660,
+        "y": 140,
         "wires": [
             [
                 "172291b267e64546"
@@ -321,8 +322,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 1550,
-        "y": 1520,
+        "x": 1670,
+        "y": 260,
         "wires": [
             [
                 "172291b267e64546"
@@ -346,8 +347,8 @@
         "once": true,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 1560,
-        "y": 1480,
+        "x": 1680,
+        "y": 220,
         "wires": [
             [
                 "172291b267e64546"
@@ -373,8 +374,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 1820,
-        "y": 1460,
+        "x": 1940,
+        "y": 200,
         "wires": [
             [
                 "237f0e77d00e8430"
@@ -387,8 +388,8 @@
         "z": "7f238379090da3b0",
         "name": "Set Charge Mode",
         "info": "",
-        "x": 1540,
-        "y": 1360,
+        "x": 1660,
+        "y": 100,
         "wires": []
     },
     {
@@ -404,8 +405,8 @@
         "targetType": "msg",
         "statusVal": "chargeMode",
         "statusType": "msg",
-        "x": 2040,
-        "y": 1460,
+        "x": 2160,
+        "y": 200,
         "wires": []
     },
     {
@@ -435,8 +436,8 @@
         "topic": "",
         "payload": "{\"allowed2Charge\":true,\"curAmpsSet\":14,\"chargingState\":2,\"cableCurrentLimit\":20,\"phasesEnabled\":3,\"phasesLoading\":2,\"curChargingingPower\":0,\"minChargingCurrent\":6,\"maxChargingCurrent\":32,\"chargeAmountSinceCarConnected\":10382.29,\"chargeAmountTotal\":11607,\"forceSinglePhase\":false,\"forceState\":0}",
         "payloadType": "json",
-        "x": 2010,
-        "y": 280,
+        "x": 3130,
+        "y": 160,
         "wires": [
             [
                 "9ce39f07027f05aa"
@@ -469,8 +470,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 2010,
-        "y": 320,
+        "x": 3130,
+        "y": 200,
         "wires": [
             [
                 "98c5663fcb64fc88"
@@ -494,8 +495,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 1540,
-        "y": 1440,
+        "x": 1660,
+        "y": 180,
         "wires": [
             [
                 "172291b267e64546"
@@ -1149,11 +1150,11 @@
         "septopics": false,
         "property": "payload.car",
         "topi": "topic",
-        "x": 640,
+        "x": 580,
         "y": 440,
         "wires": [
             [
-                "4d851e277cad6960"
+                "3cd9e6847116fc5f"
             ]
         ]
     },
@@ -1999,11 +2000,11 @@
         "drop": true,
         "allowrate": false,
         "outputs": 2,
-        "x": 1690,
+        "x": 1610,
         "y": 1000,
         "wires": [
             [
-                "ccaa29ef0f792afb"
+                "2091764c50448087"
             ],
             [
                 "7aedfca1dbc12c6e"
@@ -2060,7 +2061,7 @@
         "repair": false,
         "outputs": 4,
         "x": 1940,
-        "y": 1000,
+        "y": 1020,
         "wires": [
             [
                 "f06466dbd95999cd"
@@ -2094,7 +2095,7 @@
         "repair": false,
         "outputs": 1,
         "x": 2260,
-        "y": 900,
+        "y": 940,
         "wires": [
             [
                 "0d07a958b387fbe2"
@@ -2194,13 +2195,13 @@
         "type": "function",
         "z": "7f238379090da3b0",
         "name": "Target Current",
-        "func": "msg.targetCurrent = Math.floor(msg.surplus / Math.max(flow.get(\"chargingPhases\"), 1) / 230);\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Target Current = \" + msg.targetCurrent });\nreturn msg;",
+        "func": "let phases = Math.max(flow.get(\"chargingPhases\"), 1);\n\nmsg.targetCurrent = Math.round(msg.surplus / phases / 230);\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Phases=\" + phases +\", Current=\" + msg.targetCurrent });\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 2500,
+        "x": 2480,
         "y": 1080,
         "wires": [
             [
@@ -2275,7 +2276,7 @@
         "id": "c1e698c4e0ba7e1f",
         "type": "change",
         "z": "7f238379090da3b0",
-        "name": "Advice Charge Current",
+        "name": "Advise Charge Current",
         "rules": [
             {
                 "t": "set",
@@ -2347,7 +2348,7 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 1500,
+        "x": 1440,
         "y": 1000,
         "wires": [
             [
@@ -2413,7 +2414,7 @@
         "id": "58f59ea1399dbd29",
         "type": "change",
         "z": "7f238379090da3b0",
-        "name": "Change Phase Mode",
+        "name": "Advise Phase Mode",
         "rules": [
             {
                 "t": "set",
@@ -2477,7 +2478,7 @@
         "to": "",
         "reg": false,
         "x": 2750,
-        "y": 880,
+        "y": 940,
         "wires": [
             [
                 "a4f33a4c6526cedc"
@@ -2503,8 +2504,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 3560,
-        "y": 800,
+        "x": 3520,
+        "y": 860,
         "wires": [
             [
                 "a4f33a4c6526cedc"
@@ -2515,7 +2516,7 @@
         "id": "a88bc9fc9edb4e93",
         "type": "change",
         "z": "7f238379090da3b0",
-        "name": "Set Charge Mode",
+        "name": "Advise Charge Mode",
         "rules": [
             {
                 "t": "set",
@@ -2530,7 +2531,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 3610,
+        "x": 3460,
         "y": 960,
         "wires": [
             [
@@ -2551,8 +2552,8 @@
         "septopics": false,
         "property": "chargeMode",
         "topi": "topic",
-        "x": 3590,
-        "y": 880,
+        "x": 3030,
+        "y": 960,
         "wires": [
             [
                 "a88bc9fc9edb4e93"
@@ -2565,8 +2566,8 @@
         "z": "7f238379090da3b0",
         "name": "Test knobs",
         "info": "",
-        "x": 2240,
-        "y": 1300,
+        "x": 2140,
+        "y": 600,
         "wires": []
     },
     {
@@ -2580,8 +2581,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 2350,
-        "y": 1480,
+        "x": 2250,
+        "y": 780,
         "wires": [
             [
                 "c388fcb68adf7ad2"
@@ -2599,8 +2600,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 2350,
-        "y": 1520,
+        "x": 2250,
+        "y": 820,
         "wires": [
             [
                 "7904eea616dd2d22"
@@ -2624,8 +2625,8 @@
         "topic": "",
         "payload": "{\"targetCurrent\":16}",
         "payloadType": "json",
-        "x": 2370,
-        "y": 1440,
+        "x": 2270,
+        "y": 740,
         "wires": [
             [
                 "170eff26adbc7489"
@@ -2649,8 +2650,8 @@
         "topic": "",
         "payload": "{\"targetCurrent\":4}",
         "payloadType": "json",
-        "x": 2370,
-        "y": 1360,
+        "x": 2270,
+        "y": 660,
         "wires": [
             [
                 "170eff26adbc7489"
@@ -2705,6 +2706,72 @@
             ],
             [
                 "58f59ea1399dbd29"
+            ]
+        ]
+    },
+    {
+        "id": "2091764c50448087",
+        "type": "switch",
+        "z": "7f238379090da3b0",
+        "name": "Car present?",
+        "property": "carStatus",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 1890,
+        "y": 940,
+        "wires": [
+            [
+                "ccaa29ef0f792afb"
+            ]
+        ]
+    },
+    {
+        "id": "3cd9e6847116fc5f",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Car Status",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.car",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "carStatus",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "carStatus",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 650,
+        "y": 540,
+        "wires": [
+            [
+                "4d851e277cad6960"
             ]
         ]
     }
