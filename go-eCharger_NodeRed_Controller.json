@@ -48,7 +48,6 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "credentials": {},
         "x": 250,
         "y": 340,
         "wires": [
@@ -195,9 +194,7 @@
         "x": 3820,
         "y": 1100,
         "wires": [
-            [
-                "2ab4b97a56ab922d"
-            ]
+            []
         ]
     },
     {
@@ -744,7 +741,7 @@
         "type": "switch",
         "z": "7f238379090da3b0",
         "name": "Check Car State",
-        "property": "payload.car",
+        "property": "payload",
         "propertyType": "msg",
         "rules": [
             {
@@ -2221,7 +2218,7 @@
                 "t": "btwn",
                 "v": "minChargeCurrent",
                 "vt": "flow",
-                "v2": "15",
+                "v2": "17",
                 "v2t": "num"
             },
             {
@@ -2310,8 +2307,8 @@
         "rules": [
             {
                 "t": "eq",
-                "v": "false",
-                "vt": "flow"
+                "v": "0",
+                "vt": "num"
             },
             {
                 "t": "else"
@@ -2320,14 +2317,14 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 2490,
-        "y": 1160,
+        "x": 2440,
+        "y": 1180,
         "wires": [
             [
                 "7904eea616dd2d22"
             ],
             [
-                "0d07a958b387fbe2"
+                "d80fb287515d8866"
             ]
         ]
     },
@@ -2721,17 +2718,23 @@
                 "t": "eq",
                 "v": "2",
                 "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "4",
+                "vt": "str"
             }
         ],
         "checkall": "true",
         "repair": false,
-        "outputs": 1,
+        "outputs": 2,
         "x": 1890,
         "y": 940,
         "wires": [
             [
                 "ccaa29ef0f792afb"
-            ]
+            ],
+            []
         ]
     },
     {
@@ -2772,6 +2775,33 @@
         "wires": [
             [
                 "4d851e277cad6960"
+            ]
+        ]
+    },
+    {
+        "id": "d80fb287515d8866",
+        "type": "change",
+        "z": "7f238379090da3b0",
+        "name": "Set Min Current",
+        "rules": [
+            {
+                "t": "set",
+                "p": "targetCurrent",
+                "pt": "msg",
+                "to": "6",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 2740,
+        "y": 1260,
+        "wires": [
+            [
+                "85ea5faa6b7aa7ce"
             ]
         ]
     }
