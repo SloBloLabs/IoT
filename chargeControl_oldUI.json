@@ -1,0 +1,1647 @@
+[
+    {
+        "id": "10c74b2112bf4204",
+        "type": "tab",
+        "label": "UI",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "fa50299cadd670e8",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1265,
+        "y": 200,
+        "wires": [],
+        "l": false
+    },
+    {
+        "id": "bf92bcd9a38ceec2",
+        "type": "ui_dropdown",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "label": "Charge Mode",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "afbda83a13d92c4b",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Disable",
+                "value": "off",
+                "type": "str"
+            },
+            {
+                "label": "Fast",
+                "value": "fast",
+                "type": "str"
+            },
+            {
+                "label": "Eco",
+                "value": "eco",
+                "type": "str"
+            },
+            {
+                "label": "Sun",
+                "value": "sun",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "New Charge Mode",
+        "topicType": "str",
+        "className": "",
+        "x": 1060,
+        "y": 80,
+        "wires": [
+            [
+                "2dc1beca5ddc0848",
+                "aa6f65ec954d367e"
+            ]
+        ]
+    },
+    {
+        "id": "38ceb87981af247b",
+        "type": "ui_switch",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "label": "Enable Charging",
+        "tooltip": "",
+        "group": "afbda83a13d92c4b",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "Enable Charging",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 1060,
+        "y": 260,
+        "wires": [
+            [
+                "fa50299cadd670e8",
+                "aa6f65ec954d367e"
+            ]
+        ]
+    },
+    {
+        "id": "adfeec51eb263639",
+        "type": "ui_slider",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "label": "Charge Current",
+        "tooltip": "",
+        "group": "afbda83a13d92c4b",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "outs": "end",
+        "topic": "New Charge Current",
+        "topicType": "str",
+        "min": "6",
+        "max": "32",
+        "step": 1,
+        "className": "",
+        "x": 1060,
+        "y": 200,
+        "wires": [
+            [
+                "fa50299cadd670e8",
+                "aa6f65ec954d367e"
+            ]
+        ]
+    },
+    {
+        "id": "55ee02dbd390e74e",
+        "type": "ui_gauge",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "group": "66a6dbc78607550f",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Solar Production",
+        "label": "W",
+        "format": "{{value | number:2}}",
+        "min": "-1",
+        "max": "10000",
+        "colors": [
+            "#ad1524",
+            "#e6e600",
+            "#02b500"
+        ],
+        "seg1": "500",
+        "seg2": "1000",
+        "diff": false,
+        "className": "",
+        "x": 410,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "5c9ec382c7deb5dd",
+        "type": "ui_chart",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "group": "47698eefd36122e3",
+        "order": 2,
+        "width": 7,
+        "height": 8,
+        "label": "Power",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "60000",
+        "removeOlder": "6",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 990,
+        "y": 1260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "aa6f65ec954d367e",
+        "type": "ui_toast",
+        "z": "10c74b2112bf4204",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 1340,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "2dc1beca5ddc0848",
+        "type": "link out",
+        "z": "10c74b2112bf4204",
+        "name": "Send Charge Mode to flow",
+        "mode": "link",
+        "links": [
+            "6d2af25d8bb89a3d"
+        ],
+        "x": 1175,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "74da848988fb3c79",
+        "type": "link in",
+        "z": "10c74b2112bf4204",
+        "name": "Receive Charge Mode from Flow",
+        "links": [
+            "2449ba03868ff762"
+        ],
+        "x": 945,
+        "y": 80,
+        "wires": [
+            [
+                "bf92bcd9a38ceec2"
+            ]
+        ]
+    },
+    {
+        "id": "2d922d37356434b9",
+        "type": "ui_slider",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "label": "Phases",
+        "tooltip": "",
+        "group": "afbda83a13d92c4b",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "outs": "end",
+        "topic": "New #Phases",
+        "topicType": "str",
+        "min": "1",
+        "max": "3",
+        "step": "1",
+        "className": "",
+        "x": 1040,
+        "y": 140,
+        "wires": [
+            [
+                "fa50299cadd670e8",
+                "aa6f65ec954d367e"
+            ]
+        ]
+    },
+    {
+        "id": "11cc229899756a86",
+        "type": "link in",
+        "z": "10c74b2112bf4204",
+        "name": "Receive Enable Charging from Flow",
+        "links": [
+            "7459187132bf8080"
+        ],
+        "x": 945,
+        "y": 260,
+        "wires": [
+            [
+                "38ceb87981af247b"
+            ]
+        ]
+    },
+    {
+        "id": "2bc5ac89842c040c",
+        "type": "link in",
+        "z": "10c74b2112bf4204",
+        "name": "Receive Enphase Raw Data",
+        "links": [
+            "3602cfb264d30dd5"
+        ],
+        "x": 75,
+        "y": 80,
+        "wires": [
+            [
+                "d36b2ce69accb814",
+                "88a5a16f95c74d63"
+            ]
+        ]
+    },
+    {
+        "id": "d36b2ce69accb814",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.production",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "55ee02dbd390e74e"
+            ]
+        ]
+    },
+    {
+        "id": "eac7d5383aefc628",
+        "type": "ui_gauge",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "group": "66a6dbc78607550f",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "House Consumption",
+        "label": "W",
+        "format": "{{value | number:2}}",
+        "min": "-1",
+        "max": "10000",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "500",
+        "seg2": "2000",
+        "diff": false,
+        "className": "",
+        "x": 420,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "88a5a16f95c74d63",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.consumption",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 140,
+        "wires": [
+            [
+                "eac7d5383aefc628"
+            ]
+        ]
+    },
+    {
+        "id": "be2f6af7761aea5f",
+        "type": "link in",
+        "z": "10c74b2112bf4204",
+        "name": "Receive Surplus from Flow",
+        "links": [
+            "c02f88f071cfbc5c"
+        ],
+        "x": 85,
+        "y": 200,
+        "wires": [
+            [
+                "4c5c217aee2efff8"
+            ]
+        ]
+    },
+    {
+        "id": "4c5c217aee2efff8",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "surplus",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 200,
+        "wires": [
+            [
+                "f4a784db3ce47274"
+            ]
+        ]
+    },
+    {
+        "id": "f4a784db3ce47274",
+        "type": "ui_gauge",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "group": "66a6dbc78607550f",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Solar Surplus",
+        "label": "W",
+        "format": "{{value | number:2}}",
+        "min": "-1",
+        "max": "10000",
+        "colors": [
+            "#ad1524",
+            "#e6e600",
+            "#02b500"
+        ],
+        "seg1": "1400",
+        "seg2": "4200",
+        "diff": false,
+        "className": "",
+        "x": 400,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "c940ecad7a9ef541",
+        "type": "ui_template",
+        "z": "10c74b2112bf4204",
+        "d": true,
+        "group": "47698eefd36122e3",
+        "name": "Car allowed to charge",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "format": "<!--div ng-bind-html=\"msg.payload\"></div-->\n<div layout=\"row\" layout-align=\"space-between center\" style=\"padding: 0 6px;\">\n  <p>Car allowed to charge</p>\n  <font color=\"{{msg.payload ? 'green' : 'red'}}\">\n      <i class=\"fa fa-plug\" aria-hidden=\"true\"></i>\n      <!--i class=\"fa fa-battery-full\" aria-hidden=\"true\"></i-->\n      {{msg.payload ? 'charging' : 'not charging'}}\n  </font>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 700,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1fffd54dd1b73a83",
+        "type": "link in",
+        "z": "10c74b2112bf4204",
+        "name": "Receive go-e Status from Flow",
+        "links": [
+            "7800c66d240f1e37"
+        ],
+        "x": 225,
+        "y": 780,
+        "wires": [
+            [
+                "07d64766ae4d871f",
+                "1bf918c098aa23b5",
+                "5d62052a5f0f550c",
+                "a7a003aea0773745",
+                "8f5a71ca3c12ab11",
+                "45917d18adf1425d",
+                "e017dff7ebd9b383",
+                "747b082946701e76",
+                "3da3d56a89fb6ecd",
+                "2d3261267f3f9b50",
+                "5dafe5287c48586f",
+                "8c76ed35a185c06a",
+                "e578cb20924d09d7",
+                "17ad244f7c2a6a66",
+                "48bd63f7ae328346"
+            ]
+        ]
+    },
+    {
+        "id": "8f5a71ca3c12ab11",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Car Allowed to Charge",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.alw",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Car Allowed to Charge",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 660,
+        "wires": [
+            [
+                "51e9751a1382fab1",
+                "c940ecad7a9ef541",
+                "627181ef737576da"
+            ]
+        ]
+    },
+    {
+        "id": "51e9751a1382fab1",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Car Allowed to Charge",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 940,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "45917d18adf1425d",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Charge Current",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.amp",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Charge Current",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 720,
+        "wires": [
+            [
+                "19b5239bd3753f99",
+                "adfeec51eb263639",
+                "627181ef737576da"
+            ]
+        ]
+    },
+    {
+        "id": "19b5239bd3753f99",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Charge Current",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 920,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "a7a003aea0773745",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Charge Power",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.nrg[11]",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Charge Power",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 600,
+        "wires": [
+            [
+                "19f0ae24bd039198",
+                "5c9ec382c7deb5dd"
+            ]
+        ]
+    },
+    {
+        "id": "19f0ae24bd039198",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Charge Power",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 920,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "e017dff7ebd9b383",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Cable Current Limit",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.cbl",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Cable Current Limit",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 470,
+        "y": 780,
+        "wires": [
+            [
+                "0abf1104a998e4fe",
+                "14043bc0d34c7f34"
+            ]
+        ]
+    },
+    {
+        "id": "0abf1104a998e4fe",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Cable Current Limit",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 930,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "07d64766ae4d871f",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Active Phases",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.pha",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Active Phases",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 480,
+        "wires": [
+            [
+                "3a54eb84926d3431",
+                "6f4f843048ad0c09"
+            ]
+        ]
+    },
+    {
+        "id": "3a54eb84926d3431",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Active Phases",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 920,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "5d62052a5f0f550c",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Charging Phases",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.nrg_pha",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Charging Phases",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 470,
+        "y": 540,
+        "wires": [
+            [
+                "891cfa8f3d948a47",
+                "0d176dc14a58966f",
+                "627181ef737576da",
+                "4061610b7bf76b8d"
+            ]
+        ]
+    },
+    {
+        "id": "891cfa8f3d948a47",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Charging Phases",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 930,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "747b082946701e76",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Min Charge Current",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.mca",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Min Charge Current",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 470,
+        "y": 840,
+        "wires": [
+            [
+                "96f0c1a939cdbe23",
+                "b096f7876ed384f8"
+            ]
+        ]
+    },
+    {
+        "id": "96f0c1a939cdbe23",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Min Charge Current",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 930,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "3da3d56a89fb6ecd",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Max Charge Current",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.ama",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Max Charge Current",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 900,
+        "wires": [
+            [
+                "5445c45f3d6c7c18",
+                "e0c666ec43524750"
+            ]
+        ]
+    },
+    {
+        "id": "5445c45f3d6c7c18",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Max Charge Current",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 940,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "2d3261267f3f9b50",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Charge Amount Current Session",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.wh",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Charge Amount Current Session",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 510,
+        "y": 960,
+        "wires": [
+            [
+                "3520745491708d87",
+                "5c9ec382c7deb5dd"
+            ]
+        ]
+    },
+    {
+        "id": "3520745491708d87",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Charge Amount Current Session",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 970,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "5dafe5287c48586f",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Total Charge Amount",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.eto",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Total Charge Amount",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 1020,
+        "wires": [
+            [
+                "2e3f8f9d58c8c6e0",
+                "4f4977ea69d12bba"
+            ]
+        ]
+    },
+    {
+        "id": "2e3f8f9d58c8c6e0",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Total Charge Amount",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 940,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "8c76ed35a185c06a",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Force Single Phase",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.fsp",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Force Single Phase",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 470,
+        "y": 1080,
+        "wires": [
+            [
+                "49b6ad17e75e7472",
+                "627181ef737576da"
+            ]
+        ]
+    },
+    {
+        "id": "49b6ad17e75e7472",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Force Single Phase",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 930,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "e578cb20924d09d7",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Force State",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.frc",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Force State",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 450,
+        "y": 1140,
+        "wires": [
+            [
+                "207837909e2095c7",
+                "627181ef737576da"
+            ]
+        ]
+    },
+    {
+        "id": "207837909e2095c7",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "Force State",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload.alw",
+        "statusType": "auto",
+        "x": 910,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "6f4f843048ad0c09",
+        "type": "ui_template",
+        "z": "10c74b2112bf4204",
+        "group": "47698eefd36122e3",
+        "name": "Active Phases",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "format": "<!--div ng-bind-html=\"msg.payload\"></div-->\n<div layout=\"row\" layout-align=\"space-between center\" style=\"padding: 0 6px;\">\n  <p>Active Phases</p>\n  <font color=\"{{msg.payload == 3 ? 'green' : 'red'}}\">\n      {{msg.payload}}\n  </font>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 700,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1bf918c098aa23b5",
+        "type": "debug",
+        "z": "10c74b2112bf4204",
+        "name": "debug 6",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 200,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "0d176dc14a58966f",
+        "type": "ui_template",
+        "z": "10c74b2112bf4204",
+        "d": true,
+        "group": "47698eefd36122e3",
+        "name": "Charging Phases",
+        "order": 9,
+        "width": 0,
+        "height": 0,
+        "format": "<!--div ng-bind-html=\"msg.payload\"></div-->\n<div layout=\"row\" layout-align=\"space-between center\" style=\"padding: 0 6px;\">\n  <p>Charging Phases</p>\n  <font color=\"{{msg.payload == 3 ? 'green' : 'red'}}\">\n      {{msg.payload}}\n  </font>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 710,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6861240139f8408e",
+        "type": "ui_button",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "group": "47698eefd36122e3",
+        "order": 5,
+        "width": 5,
+        "height": 1,
+        "passthru": false,
+        "label": "Clear Charts",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "[]",
+        "payloadType": "json",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 610,
+        "y": 1320,
+        "wires": [
+            [
+                "5c9ec382c7deb5dd",
+                "627181ef737576da"
+            ]
+        ]
+    },
+    {
+        "id": "4f4977ea69d12bba",
+        "type": "ui_template",
+        "z": "10c74b2112bf4204",
+        "group": "47698eefd36122e3",
+        "name": "Total Charge Amount",
+        "order": 12,
+        "width": 0,
+        "height": 0,
+        "format": "<!--div ng-bind-html=\"msg.payload\"></div-->\n\n<style>\nfont.double_underline{\nborder-bottom: 3px double;\n}</style>\n<div layout=\"row\" layout-align=\"space-between center\" style=\"padding: 0 6px;\">\n  <p>\n    <i class=\"fa fa-line-chart\" aria-hidden=\"true\"></i>\n    Total Charge Amount\n  </p>\n  <font class=\"double_underline\" color=\"white\">\n      {{msg.payload / 1000 | number:2}} kWh\n  </font>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 720,
+        "y": 1000,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "627181ef737576da",
+        "type": "ui_chart",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "group": "47698eefd36122e3",
+        "order": 3,
+        "width": 7,
+        "height": 5,
+        "label": "Status",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "32",
+        "removeOlder": "6",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 790,
+        "y": 1260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "17ad244f7c2a6a66",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "Car Status",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.car",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "carStatus",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "carStatus",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 450,
+        "y": 420,
+        "wires": [
+            [
+                "b1b7026698149e86"
+            ]
+        ]
+    },
+    {
+        "id": "b1b7026698149e86",
+        "type": "ui_template",
+        "z": "10c74b2112bf4204",
+        "group": "47698eefd36122e3",
+        "name": "Car Status",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<!--div ng-bind-html=\"msg.payload\"></div-->\n<div layout=\"row\" layout-align=\"space-between center\" style=\"padding: 0 6px;\">\n  <p>\n    <i class=\"fa fa-car\" aria-hidden=\"true\"></i>\n    Car Status\n  </p>\n  <font color=\"{{(msg.payload == 1) ? 'grey' : \n        (msg.payload == 2) ? 'lightblue' :\n        (msg.payload == 3) ? 'yellow' :\n        (msg.payload == 4) ? 'green' : 'red'}}\">\n      {{(msg.payload == 1) ? 'Idle' : \n        (msg.payload == 2) ? 'Charging' :\n        (msg.payload == 3) ? 'Wait for car' :\n        (msg.payload == 4) ? 'Complete' : 'Error'}}\n  </font>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 670,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "48bd63f7ae328346",
+        "type": "influxdb in",
+        "z": "10c74b2112bf4204",
+        "influxdb": "61e1038ad2a9bd11",
+        "name": "Fetch Solar Power Today from Influx",
+        "query": "import \"timezone\"\noption location = timezone.location(name: \"Europe/Berlin\")\n\n// Node-Red pulls data from Envey every 30s.\n// That is 120 points per hour.\n// Times 100 we are in KW/h :-)\n\nfrom(bucket: \"smarthome\")\n  |> range(start: today(), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"envoy_meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wNow\")\n  |> filter(fn: (r) => r[\"topic\"] == \"production\")\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: true, timeSrc: \"_start\")\n  |> map(fn: (r) => ({ r with _value: r._value/120000.0}))\n  |> yield(name: \"sum\")",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "SloBloLabs",
+        "x": 250,
+        "y": 340,
+        "wires": [
+            [
+                "993a417341b4b5ac"
+            ]
+        ]
+    },
+    {
+        "id": "993a417341b4b5ac",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[0]._value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 260,
+        "wires": [
+            [
+                "33b57a037b04c785"
+            ]
+        ]
+    },
+    {
+        "id": "33b57a037b04c785",
+        "type": "ui_gauge",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "group": "66a6dbc78607550f",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Solar Production Today",
+        "label": "KW/h",
+        "format": "{{value | number:2}}",
+        "min": "-1",
+        "max": "40",
+        "colors": [
+            "#ad1524",
+            "#e6e600",
+            "#02b500"
+        ],
+        "seg1": "5",
+        "seg2": "15",
+        "diff": false,
+        "className": "",
+        "x": 430,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "f12b7e05b26dd9a3",
+        "type": "comment",
+        "z": "10c74b2112bf4204",
+        "name": "https://haus-automatisierung.com/software/2023/05/11/influxdb2-pv-dashboard.html",
+        "info": "",
+        "x": 1180,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "4061610b7bf76b8d",
+        "type": "change",
+        "z": "10c74b2112bf4204",
+        "name": "",
+        "rules": [
+            {
+                "t": "change",
+                "p": "payload",
+                "pt": "msg",
+                "from": "2",
+                "fromt": "str",
+                "to": "3",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 800,
+        "y": 220,
+        "wires": [
+            [
+                "2d922d37356434b9"
+            ]
+        ]
+    },
+    {
+        "id": "14043bc0d34c7f34",
+        "type": "ui_template",
+        "z": "10c74b2112bf4204",
+        "group": "47698eefd36122e3",
+        "name": "Cable Current Limit",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "format": "<!--div ng-bind-html=\"msg.payload\"></div-->\n<div layout=\"row\" layout-align=\"space-between center\" style=\"padding: 0 6px;\">\n  <p>Cable Current Limit</p>{{msg.payload}}\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 710,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b096f7876ed384f8",
+        "type": "ui_template",
+        "z": "10c74b2112bf4204",
+        "group": "47698eefd36122e3",
+        "name": "Min Charge Current",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "format": "<!--div ng-bind-html=\"msg.payload\"></div-->\n<div layout=\"row\" layout-align=\"space-between center\" style=\"padding: 0 6px;\">\n  <p>Min Charge Current</p>{{msg.payload}}\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 710,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e0c666ec43524750",
+        "type": "ui_template",
+        "z": "10c74b2112bf4204",
+        "group": "47698eefd36122e3",
+        "name": "Max Charge Current",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "format": "<!--div ng-bind-html=\"msg.payload\"></div-->\n<div layout=\"row\" layout-align=\"space-between center\" style=\"padding: 0 6px;\">\n  <p>Max Charge Current</p>{{msg.payload}}\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 720,
+        "y": 920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "31a69601222b0982",
+        "type": "ui_spacer",
+        "z": "10c74b2112bf4204",
+        "name": "spacer",
+        "group": "47698eefd36122e3",
+        "order": 4,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "7c75e8fd856dc8b8",
+        "type": "ui_spacer",
+        "z": "10c74b2112bf4204",
+        "name": "spacer",
+        "group": "47698eefd36122e3",
+        "order": 6,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "2a78e097ebc565f3",
+        "type": "ui_spacer",
+        "z": "10c74b2112bf4204",
+        "name": "spacer",
+        "group": "47698eefd36122e3",
+        "order": 11,
+        "width": 7,
+        "height": 1
+    },
+    {
+        "id": "afbda83a13d92c4b",
+        "type": "ui_group",
+        "name": "go-e Control",
+        "tab": "484d56f05d6c7786",
+        "order": 3,
+        "disp": true,
+        "width": "7",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "66a6dbc78607550f",
+        "type": "ui_group",
+        "name": "Solar",
+        "tab": "484d56f05d6c7786",
+        "order": 1,
+        "disp": true,
+        "width": "7",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "47698eefd36122e3",
+        "type": "ui_group",
+        "name": "go-e Status",
+        "tab": "484d56f05d6c7786",
+        "order": 2,
+        "disp": true,
+        "width": "7",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "61e1038ad2a9bd11",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "influx envoy",
+        "usetls": false,
+        "tls": "a0af54c0.3a7438",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": false,
+        "credentials": {}
+    },
+    {
+        "id": "484d56f05d6c7786",
+        "type": "ui_tab",
+        "name": "Charge Control",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "a0af54c0.3a7438",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "",
+        "verifyservercert": false,
+        "alpnprotocol": ""
+    }
+]

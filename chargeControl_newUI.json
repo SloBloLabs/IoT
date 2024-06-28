@@ -1,0 +1,1004 @@
+[
+    {
+        "id": "9dcb0f5a7d6dea8d",
+        "type": "tab",
+        "label": "UI2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1a189661f3cbb05b",
+        "type": "ui-button",
+        "z": "9dcb0f5a7d6dea8d",
+        "group": "4682144cd9a12cf4",
+        "name": "",
+        "label": "button",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "[]",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 770,
+        "y": 280,
+        "wires": [
+            [
+                "3d036cb3e054c102"
+            ]
+        ]
+    },
+    {
+        "id": "5be3b35618ba68d6",
+        "type": "ui-text-input",
+        "z": "9dcb0f5a7d6dea8d",
+        "group": "4682144cd9a12cf4",
+        "name": "Name",
+        "label": "name",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "topic": "name",
+        "topicType": "str",
+        "mode": "text",
+        "delay": 300,
+        "passthru": true,
+        "sendOnDelay": false,
+        "sendOnBlur": true,
+        "sendOnEnter": true,
+        "className": "",
+        "x": 770,
+        "y": 120,
+        "wires": [
+            [
+                "45da200c0e071059"
+            ]
+        ]
+    },
+    {
+        "id": "c681c66e6423335a",
+        "type": "ui-gauge",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "SolarProduction",
+        "group": "49a9b4d80b6aea04",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "gauge",
+        "units": "W",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "-1",
+                "color": "#b92222"
+            },
+            {
+                "from": "500",
+                "color": "#ba9b2c"
+            },
+            {
+                "from": "2000",
+                "color": "#2ab72a"
+            }
+        ],
+        "min": "-1",
+        "max": "10000",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 460,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "e0d8fee82c0e9d6e",
+        "type": "link in",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Receive Enphase Raw Data",
+        "links": [
+            "3602cfb264d30dd5"
+        ],
+        "x": 95,
+        "y": 80,
+        "wires": [
+            [
+                "c8a2e11cb5577466",
+                "c40474c0c350cd4e"
+            ]
+        ]
+    },
+    {
+        "id": "c8a2e11cb5577466",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.production",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 80,
+        "wires": [
+            [
+                "c681c66e6423335a"
+            ]
+        ]
+    },
+    {
+        "id": "c40474c0c350cd4e",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.consumption",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fc06a0e8535b07a6",
+        "type": "link in",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Receive Surplus from Flow",
+        "links": [
+            "c02f88f071cfbc5c"
+        ],
+        "x": 105,
+        "y": 200,
+        "wires": [
+            [
+                "9399bbcc2808701a"
+            ]
+        ]
+    },
+    {
+        "id": "9399bbcc2808701a",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "surplus",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f4d453b181af8740",
+        "type": "link in",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Receive go-e Status from Flow",
+        "links": [
+            "7800c66d240f1e37"
+        ],
+        "x": 245,
+        "y": 780,
+        "wires": [
+            [
+                "652a303ec4a0ed26",
+                "55037cc5074a0af6",
+                "70ff4da7044e9acd",
+                "abb427178bffae35",
+                "caa6d61c20cd071f",
+                "04b9e2756d07316c",
+                "c174aae4cf7ef06c",
+                "39dfbf4796a956f8",
+                "ea270a8ba3eeccc3",
+                "47c6ded6e4f88061",
+                "60056c8dcb7c535d",
+                "a0c618c83776aa4e",
+                "6abc9b51e5a97c22",
+                "70c904ff080ee888",
+                "36fb67c9fd98d054"
+            ]
+        ]
+    },
+    {
+        "id": "caa6d61c20cd071f",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Car Allowed to Charge",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.alw",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Car Allowed to Charge",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 500,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "04b9e2756d07316c",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Charge Current",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.amp",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Charge Current",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "abb427178bffae35",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Charge Power",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.nrg[11]",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Charge Power",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c174aae4cf7ef06c",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Cable Current Limit",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.cbl",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Cable Current Limit",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "652a303ec4a0ed26",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Active Phases",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.pha",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Active Phases",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "70ff4da7044e9acd",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Charging Phases",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.nrg_pha",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Charging Phases",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "39dfbf4796a956f8",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Min Charge Current",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.mca",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Min Charge Current",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ea270a8ba3eeccc3",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Max Charge Current",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.ama",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Max Charge Current",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 500,
+        "y": 900,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "47c6ded6e4f88061",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Charge Amount Current Session",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.wh",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Charge Amount Current Session",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 530,
+        "y": 960,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "60056c8dcb7c535d",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Total Charge Amount",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.eto",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Total Charge Amount",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 500,
+        "y": 1020,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a0c618c83776aa4e",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Force Single Phase",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.fsp",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Force Single Phase",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 1080,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6abc9b51e5a97c22",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Force State",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.frc",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Force State",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 470,
+        "y": 1140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "55037cc5074a0af6",
+        "type": "debug",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "debug 7",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 220,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "70c904ff080ee888",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Car Status",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.car",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "carStatus",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "carStatus",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 470,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "36fb67c9fd98d054",
+        "type": "influxdb in",
+        "z": "9dcb0f5a7d6dea8d",
+        "influxdb": "61e1038ad2a9bd11",
+        "name": "Fetch Solar Power Today from Influx",
+        "query": "import \"timezone\"\noption location = timezone.location(name: \"Europe/Berlin\")\n\n// Node-Red pulls data from Envey every 30s.\n// That is 120 points per hour.\n// Times 100 we are in KW/h :-)\n\nfrom(bucket: \"smarthome\")\n  |> range(start: today(), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"envoy_meter\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wNow\")\n  |> filter(fn: (r) => r[\"topic\"] == \"production\")\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: true, timeSrc: \"_start\")\n  |> map(fn: (r) => ({ r with _value: r._value/120000.0}))\n  |> yield(name: \"sum\")",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "SloBloLabs",
+        "x": 270,
+        "y": 340,
+        "wires": [
+            [
+                "8c789101e8802783"
+            ]
+        ]
+    },
+    {
+        "id": "8c789101e8802783",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[0]._value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "754b420185c0f435",
+        "type": "ui-markdown",
+        "z": "9dcb0f5a7d6dea8d",
+        "group": "4682144cd9a12cf4",
+        "name": "Markdown Overview",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "content": "# Title\n\n## Heading\n\n### Hello {{msg.payload.name}} {{msg.payload.option}}\n\nGoes here...",
+        "className": "",
+        "x": 1100,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "45da200c0e071059",
+        "type": "function",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Store2Flow",
+        "func": "let details = flow.get(\"details\") ?? {};\n\ndetails[msg.topic] = msg.payload;\n\nflow.set(\"details\", details);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3667d14aff36c738",
+        "type": "ui-dropdown",
+        "z": "9dcb0f5a7d6dea8d",
+        "group": "4682144cd9a12cf4",
+        "name": "Option",
+        "label": "MyOption",
+        "tooltip": "",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "A",
+                "value": "a",
+                "type": "str"
+            },
+            {
+                "label": "B",
+                "value": "b",
+                "type": "str"
+            },
+            {
+                "label": "C",
+                "value": "c",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "option",
+        "topicType": "str",
+        "className": "",
+        "x": 770,
+        "y": 160,
+        "wires": [
+            [
+                "45da200c0e071059"
+            ]
+        ]
+    },
+    {
+        "id": "d6e4724c072f3fe4",
+        "type": "ui-switch",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "On / Off",
+        "label": "switch",
+        "group": "4682144cd9a12cf4",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "topic": "onoroff",
+        "topicType": "str",
+        "style": "",
+        "className": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 760,
+        "y": 200,
+        "wires": [
+            [
+                "45da200c0e071059"
+            ]
+        ]
+    },
+    {
+        "id": "3d036cb3e054c102",
+        "type": "change",
+        "z": "9dcb0f5a7d6dea8d",
+        "name": "Get Details",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "details",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 910,
+        "y": 280,
+        "wires": [
+            [
+                "754b420185c0f435"
+            ]
+        ]
+    },
+    {
+        "id": "fd3f7014aaacd873",
+        "type": "ui-text-input",
+        "z": "9dcb0f5a7d6dea8d",
+        "group": "4682144cd9a12cf4",
+        "name": "DOB",
+        "label": "dob",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "topic": "dob",
+        "topicType": "str",
+        "mode": "date",
+        "delay": 300,
+        "passthru": true,
+        "sendOnDelay": false,
+        "sendOnBlur": true,
+        "sendOnEnter": true,
+        "className": "",
+        "x": 770,
+        "y": 240,
+        "wires": [
+            [
+                "45da200c0e071059"
+            ]
+        ]
+    },
+    {
+        "id": "4682144cd9a12cf4",
+        "type": "ui-group",
+        "name": "MainForm",
+        "page": "2eb71a79652993cc",
+        "width": "6",
+        "height": "1",
+        "order": -1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "49a9b4d80b6aea04",
+        "type": "ui-group",
+        "name": "KPIs",
+        "page": "7dd0d3247d1719f0",
+        "width": "6",
+        "height": "1",
+        "order": -1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "61e1038ad2a9bd11",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "influx envoy",
+        "usetls": false,
+        "tls": "a0af54c0.3a7438",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": false,
+        "credentials": {}
+    },
+    {
+        "id": "2eb71a79652993cc",
+        "type": "ui-page",
+        "name": "Form Page",
+        "ui": "309f50477c18810d",
+        "path": "/homeautomation",
+        "icon": "home",
+        "layout": "notebook",
+        "theme": "de45e906790f1e44",
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "7dd0d3247d1719f0",
+        "type": "ui-page",
+        "name": "KPI",
+        "ui": "309f50477c18810d",
+        "path": "/kpi",
+        "icon": "home",
+        "layout": "notebook",
+        "theme": "de45e906790f1e44",
+        "order": 2,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "a0af54c0.3a7438",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "",
+        "verifyservercert": false,
+        "alpnprotocol": ""
+    },
+    {
+        "id": "309f50477c18810d",
+        "type": "ui-base",
+        "name": "HomeAutomation",
+        "path": "/dashboard",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false
+    },
+    {
+        "id": "de45e906790f1e44",
+        "type": "ui-theme",
+        "name": "Default",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094ce",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    }
+]
